@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # add apps
-    'userManagement'
+    'accounts'
     # add Libraries
 ]
 
