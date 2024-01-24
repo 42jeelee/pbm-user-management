@@ -1,9 +1,9 @@
-from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.db import models
 
 # Create your models here.
 class UserManager(BaseUserManager):
-    def create_user(self, email, nickname, name, profile, password=None):
+    def create_user(self, email, nickname, name, profile=None, password=None):
         if not email:
             raise ValueError('must provide an email address')
         if not nickname:
@@ -15,7 +15,6 @@ class UserManager(BaseUserManager):
             nickname = nickname,
             name = name,
             profile = profile,
-            rank = 0,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -24,10 +23,10 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, nickname, name, profile, password=None):
         user = self.create_user(
             email,
-            nickname = nickname,
-            name = name,
-            profile = profile,
-            password = password,
+            nickname,
+            name,
+            profile,
+            password,
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -38,10 +37,11 @@ class User(AbstractBaseUser):
     email = models.EmailField(default='', max_length=100, null=False, blank=False, unique=True)
     nickname = models.CharField(default='', max_length=100, null=False, blank=False, unique=True)
     name = models.CharField(default='', max_length=50, null=False, blank=False)
-    profile = models.CharField(default='', max_length=200)
+    profile = models.CharField(default='', max_length=200, blank=True, null=True)
 
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+    rank = models.IntegerField(default=0)
 
     objects = UserManager()
 
